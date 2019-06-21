@@ -11,6 +11,7 @@ module.exports = {
   },
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
   rules: {
+    "vue/singleline-html-element-content-newline": "off",
     "vue/max-attributes-per-line": [2, {
       "singleline": 10,
       "multiline": {

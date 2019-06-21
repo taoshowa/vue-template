@@ -1,4 +1,5 @@
 import router from './router'
+import { setTitle } from './utils'
 // import store from './store'
 // import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // getToken from cookie
@@ -10,9 +11,12 @@ import { getToken } from '@/utils/auth' // getToken from cookie
 //   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 // }
 
-const whiteList = ['/login']// no redirect whitelist
+// const whiteList = ['/login']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
+  // set page title
+  setTitle(to.meta.title)
+
   if (getToken()) { // determine if there has token
     /* has token */
     if (to.path === '/login') {
@@ -44,11 +48,13 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
+    // 跳过状态判断
     /* has no token */
-    if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
-      next()
-    } else {
-      next('/login') // 否则全部重定向到登录页
-    }
+    // if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+    //   next()
+    // } else {
+    //   next('/login') // 否则全部重定向到登录页
+    // }
+    next()
   }
 })

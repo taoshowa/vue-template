@@ -1,15 +1,15 @@
 <template>
   <div class="app-wrapper clearfix">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <RouterLink to="/">Home</RouterLink> |
+      <RouterLink to="/about">About</RouterLink>
     </div>
     <div class="main-container">
-      <transition name="fade-transform" mode="out-in">
+      <Transition name="fade-transform" mode="out-in">
         <!-- <keep-alive> -->
-        <router-view :key="key"></router-view>
+        <RouterView :key="key" />
         <!-- </keep-alive> -->
-      </transition>
+      </Transition>
     </div>
   </div>
 </template>

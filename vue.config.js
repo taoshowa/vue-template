@@ -1,46 +1,45 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const pkg = require('./package.json')
+const defaultSettings = require('./src/settings.js')
 
+const dependencies = pkg.dependencies
 const externals = {
   'vue': 'Vue',
   'vue-router': 'VueRouter',
   'vuex': 'Vuex',
   'axios': 'axios'
-  // 'element-ui': 'ELEMENT'
 }
 
 const cdn = {
   // 开发环境
   dev: {
-    css: [
-      // 'https://cdn.jsdelivr.net/npm/element-ui@2.4.11/lib/theme-chalk/index.min.css'
-    ],
+    css: [],
     js: [
-      'https://cdn.bootcss.com/vue/2.5.17/vue.js',
-      'https://cdn.bootcss.com/vue-router/3.0.1/vue-router.js',
-      'https://cdn.bootcss.com/vuex/3.0.1/vuex.js',
-      'https://cdn.bootcss.com/axios/0.18.0/axios.js'
-      // 'https://cdn.jsdelivr.net/npm/element-ui@2.4.11/lib/index.js'
+      `https://cdn.bootcss.com/vue/${dependencies['vue']}/vue.runtime.js`,
+      `https://cdn.bootcss.com/vue-router/${dependencies['vue-router']}/vue-router.js`,
+      `https://cdn.bootcss.com/vuex/${dependencies['vuex']}/vuex.js`,
+      `https://cdn.bootcss.com/axios/${dependencies['axios']}/axios.js`
     ]
   },
   // 生产环境
-  build: {
-    css: [
-      // 'https://cdn.jsdelivr.net/npm/element-ui@2.4.11/lib/theme-chalk/index.min.css'
-    ],
+  prod: {
+    css: [],
     js: [
       // disable cache wifi 310-420ms, max 600ms, fast 3g 3.07s
-      'https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js',
-      'https://cdn.jsdelivr.net/npm/vue-router@3.0.1/dist/vue-router.min.js',
-      'https://cdn.jsdelivr.net/npm/vuex@3.0.1/dist/vuex.min.js',
-      'https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js'
-      // 'https://cdn.jsdelivr.net/npm/element-ui@2.4.11/lib/index.min.js'
+      `https://cdn.jsdelivr.net/npm/vue@${dependencies['vue']}/dist/vue.runtime.min.js`,
+      `https://cdn.jsdelivr.net/npm/vue-router@${dependencies['vue-router']}/dist/vue-router.min.js`,
+      `https://cdn.jsdelivr.net/npm/vuex@${dependencies['vuex']}/dist/vuex.min.js`,
+      `https://cdn.jsdelivr.net/npm/axios@${dependencies['axios']}/dist/axios.min.js`
     ]
   }
 }
 
+const name = defaultSettings.title || 'Vue Template' // page title
+
 const isProduction = process.env.NODE_ENV === 'production'
 
+const productionClear = true
 // Gzip 压缩
 const productionGzip = true
 const productionGzipExtensions = ['js', 'css']
@@ -68,21 +67,25 @@ module.exports = {
   },
   configureWebpack: config => {
     config.externals = externals
+    config.name = name
 
     if (isProduction) {
       // 移除console debugger
-      config.plugins.push(
-        new UglifyJsPlugin({
-          uglifyOptions: {
-            compress: {
-              warnings: false,
-              drop_debugger: true,
-              drop_console: true
+      if (productionClear) {
+        config.plugins.push(
+          new UglifyJsPlugin({
+            uglifyOptions: {
+              compress: {
+                warnings: false,
+                drop_debugger: true,
+                drop_console: true
+              }
             }
-          }
-        })
-      )
+          })
+        )
+      }
       if (productionGzip) {
+        // Gzip
         config.plugins.push(
           new CompressionWebpackPlugin({
             test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
@@ -97,8 +100,10 @@ module.exports = {
     config
       .plugin('html')
       .tap(args => {
-        args[0].cdn = cdn[isProduction ? 'build' : 'dev']
+        args[0].cdn = cdn[isProduction ? 'prod' : 'dev']
         return args
       })
+    config.plugins.delete('preload')
+    config.plugins.delete('prefetch')
   }
 }

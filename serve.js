@@ -1,7 +1,7 @@
 var express = require('express')
 var app = express()
 
-// 测试gzip, 如果你想关闭gzip, vue.config.js的productionGzip设为false
+// 测试gzip, 如果你想关闭gzip, 把vue.config.js的productionGzip设为false
 var compression = require('compression')
 app.use(compression())
 

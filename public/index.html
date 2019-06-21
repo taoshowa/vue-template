@@ -7,19 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css">
-    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
-    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>">
+    <% for (var css of htmlWebpackPlugin.options.cdn.css) { %>
+      <link rel="stylesheet" href="<%= css %>">
     <% } %>
-    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
-      <link rel="preload" href="<%= htmlWebpackPlugin.options.cdn.js[i] %>" as="script">
+    <% for (var js of htmlWebpackPlugin.options.cdn.js) { %>
+      <link rel="preload" href="<%= js %>" as="script">
     <% } %>
-    <title>vue-template</title>
+    <title><%= webpackConfig.name %></title>
   </head>
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
-    <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
+    <% for (var js of htmlWebpackPlugin.options.cdn.js) { %>
+      <script src="<%= js %>"></script>
     <% } %>
   </body>
 </html>

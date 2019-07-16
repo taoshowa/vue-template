@@ -9,17 +9,18 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
+  // https://eslint.vuejs.org/rules/
+  // https://standardjs.com/
+  extends: ['plugin:vue/essential', '@vue/standard'],
+  // 'off' === 0, 'warn' === 1, 'error' === 2
   rules: {
-    "vue/singleline-html-element-content-newline": "off",
-    "vue/max-attributes-per-line": [2, {
-      "singleline": 10,
-      "multiline": {
-        "max": 1,
-        "allowFirstLine": false
-      }
-    }],
-    'no-console': 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-console': process.env.NODE_ENV !== 'production' ? 0 : 2,
+    'no-debugger': process.env.NODE_ENV !== 'production' ? 0 : 2
+  },
+  // false === readonly, true === writable
+  globals: {
+    document: false,
+    navigator: false,
+    window: false
   }
 }

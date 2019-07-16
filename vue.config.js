@@ -39,7 +39,7 @@ const name = defaultSettings.title || 'Vue Template' // page title
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const productionClear = true
+const productionClear = false
 // Gzip 压缩
 const productionGzip = true
 const productionGzipExtensions = ['js', 'css']
@@ -76,9 +76,8 @@ module.exports = {
           new UglifyJsPlugin({
             uglifyOptions: {
               compress: {
-                warnings: false,
-                drop_debugger: true,
-                drop_console: true
+                drop_console: true // 删除console.*
+                // pure_funcs: ['console.log'] // 删除console.log
               }
             }
           })
@@ -105,5 +104,24 @@ module.exports = {
       })
     config.plugins.delete('preload')
     config.plugins.delete('prefetch')
+
+    // config
+    //   .when(isProduction,
+    //     config => {
+    //       config
+    //         .optimization.splitChunks({
+    //           chunks: 'all',
+    //           cacheGroups: {
+    //             libs: {
+    //               name: 'chunk-libs',
+    //               test: /[\\/]node_modules[\\/]/,
+    //               priority: 10,
+    //               chunks: 'initial' // only package third parties that are initially dependent
+    //             }
+    //           }
+    //         })
+    //       // config.optimization.runtimeChunk('single')
+    //     }
+    //   )
   }
 }

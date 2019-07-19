@@ -10,7 +10,6 @@ const externals = {
   'vuex': 'Vuex',
   'axios': 'axios'
 }
-
 const cdn = {
   // 开发环境
   dev: {
@@ -39,8 +38,11 @@ const name = defaultSettings.title || 'Vue Template' // page title
 
 const isProduction = process.env.NODE_ENV === 'production'
 
+// 静态库使用cdn形式加载 or 直接打包
+const useExternals = false
+// 生产模式移除console信息
 const productionClear = false
-// Gzip 压缩
+// 生产模式Gzip压缩资源
 const productionGzip = true
 const productionGzipExtensions = ['js', 'css']
 
@@ -75,8 +77,10 @@ module.exports = {
     }
   },
   configureWebpack: config => {
-    config.externals = externals
     config.name = name
+    if (useExternals) {
+      config.externals = externals
+    }
 
     if (isProduction) {
       // 移除console debugger
@@ -105,10 +109,11 @@ module.exports = {
     }
   },
   chainWebpack: config => {
+    // 防止关闭cdn index.html的报错
     config
       .plugin('html')
       .tap(args => {
-        args[0].cdn = cdn[isProduction ? 'prod' : 'dev']
+        args[0].cdn = useExternals ? cdn[isProduction ? 'prod' : 'dev'] : { css: [], js: [] }
         return args
       })
     config.plugins.delete('preload')
@@ -129,7 +134,7 @@ module.exports = {
     //             }
     //           }
     //         })
-    //       // config.optimization.runtimeChunk('single')
+    //       config.optimization.runtimeChunk('single')
     //     }
     //   )
   }

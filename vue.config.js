@@ -116,26 +116,26 @@ module.exports = {
         args[0].cdn = useExternals ? cdn[isProduction ? 'prod' : 'dev'] : { css: [], js: [] }
         return args
       })
-    config.plugins.delete('preload')
-    config.plugins.delete('prefetch')
+    // config.plugins.delete('preload') //预加载当前页面资源
+    config.plugins.delete('prefetch') // 预加载下一个页面资源
 
-    // config
-    //   .when(isProduction,
-    //     config => {
-    //       config
-    //         .optimization.splitChunks({
-    //           chunks: 'all',
-    //           cacheGroups: {
-    //             libs: {
-    //               name: 'chunk-libs',
-    //               test: /[\\/]node_modules[\\/]/,
-    //               priority: 10,
-    //               chunks: 'initial' // only package third parties that are initially dependent
-    //             }
-    //           }
-    //         })
-    //       config.optimization.runtimeChunk('single')
-    //     }
-    //   )
+    config
+      .when(isProduction,
+        config => {
+          config
+            .optimization.splitChunks({
+              chunks: 'all'
+              // cacheGroups: {
+              //   libs: {
+              //     name: 'chunk-libs',
+              //     test: /[\\/]node_modules[\\/]/,
+              //     priority: 10,
+              //     chunks: 'initial' // only package third parties that are initially dependent
+              //   }
+              // }
+            })
+          config.optimization.runtimeChunk('single')
+        }
+      )
   }
 }
